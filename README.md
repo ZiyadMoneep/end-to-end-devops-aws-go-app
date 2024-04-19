@@ -22,3 +22,50 @@ The `build.sh` script contains a set of variables that you need to customize acc
    ```
 
 3. Save the changes to the `build.sh` script.
+
+
+### Update application domain
+
+1. Navigate to `terraform/monitoring.tf`
+2. Update applications `host` with your domain
+3. Do the same in `k8s/app.yaml`
+
+```
+    grafana:
+      adminUser: admin
+      adminPassword: admin
+      enabled: true
+      ingress:
+        enabled: true
+        ingressClassName: nginx
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production
+        hosts:
+          - grafana.[YOUR_DOMAIN]
+        tls:
+          - secretName: grafana-tls
+            hosts:
+              - grafana.[YOUR_DOMAIN]
+```
+
+`IMPORTANT: Ensure you have updated the domain for all the services, Grafana, Alertmanager and Prometheus`
+
+
+
+## How to Run
+
+1. Clone the repository and navigate to the root directory.
+
+2. Make the deployment script executable:
+
+   ```bash
+   chmod +x build.sh
+   ```
+
+3. Run the deployment script:
+
+   ```bash
+   ./build.sh
+   ```
+
+4. Follow the post-deployment steps printed by the script to update your DNS records with the provided Ingress URL.
